@@ -1,3 +1,10 @@
+import os
+import re
+import requests
+import dotenv
+from openai import OpenAI
+from tavily import TavilyClient
+
 AGENT_SYSTEM_PROMPT = """
 你是一个智能旅行助手。你的任务是分析用户的请求，并使用可用工具一步步地解决问题。
 
@@ -23,8 +30,6 @@ Action的格式必须是以下之一：
 请开始吧！
 """
 
-
-import requests
 
 def get_weather(city: str) -> str:
     """
@@ -56,10 +61,6 @@ def get_weather(city: str) -> str:
         # 处理数据解析错误
         return f"错误：解析天气数据失败，可能是城市名称无效 - {e}"
 
-
-
-import os
-from tavily import TavilyClient
 
 def get_attraction(city: str, weather: str) -> str:
     """
@@ -108,8 +109,6 @@ available_tools = {
     "get_attraction": get_attraction,
 }
 
-from openai import OpenAI
-
 class OpenAICompatibleClient:
     """
     一个用于调用任何兼容OpenAI接口的LLM服务的客户端。
@@ -138,14 +137,15 @@ class OpenAICompatibleClient:
             print(f"调用LLM API时发生错误: {e}")
             return "错误：调用语言模型服务时出错。"
 
-import re
 
-# --- 1. 配置LLM客户端 ---
-# 请根据您使用的服务，将这里替换成对应的凭证和地址
-API_KEY = "YOUR_API_KEY"
-BASE_URL = "YOUR_BASE_URL"
-MODEL_ID = "YOUR_MODEL_ID"
-os.environ['TAVILY_API_KEY'] = "YOUR_TAVILY_API_KEY"
+dotenv.load_dotenv()
+
+API_KEY = os.getenv("OPENAI_API_KEY")
+BASE_URL = os.getenv("OPENAI_BASE_URL")
+MODEL_ID = os.getenv("MODEL_NAME")
+os.environ['TAVILY_API_KEY'] = os.getenv("TAVILY_API_KEY")
+
+print(MODEL_ID)
 
 llm = OpenAICompatibleClient(
     model=MODEL_ID,
