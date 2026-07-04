@@ -128,6 +128,10 @@ ENV/
 env.bak/
 venv.bak/
 
+# Local VS Code config files
+.vscode/launch.json
+.vscode/settings.json
+
 # Spyder project settings
 .spyderproject
 .spyproject
